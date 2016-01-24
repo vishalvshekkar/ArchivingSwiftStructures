@@ -18,11 +18,11 @@ class MovieClass: NSObject, NSCoding {
     
     required convenience init?(coder aDecoder: NSCoder) {
         self.init()
-
+        
         if let name = aDecoder.decodeObjectForKey("name") as? String,
             director = aDecoder.decodeObjectForKey("director") as? String,
             releaseYear = aDecoder.decodeObjectForKey("releaseYear") as? Int {
-            movie = Movie(name: name, director: director, releaseYear: releaseYear)
+                movie = Movie(name: name, director: director, releaseYear: releaseYear)
         }
     }
     
@@ -34,6 +34,12 @@ class MovieClass: NSObject, NSCoding {
             aCoder.encodeObject(movie.releaseYear, forKey: "releaseYear")
         }
     }
+    
+    static func path() -> String {
+        let documentsPath = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true).first
+        let path = documentsPath?.stringByAppendingString("/Movie")
+        return path!
+    }
 }
 
 //External functions that trigger Archiving and Unarchiving of Movie
@@ -41,16 +47,17 @@ class MovieClass: NSObject, NSCoding {
 func archiveMovie(movie: Movie) {
     let movieClassObject = MovieClass()
     movieClassObject.movie = movie
-    let data = NSKeyedArchiver.archivedDataWithRootObject(movieClassObject)
-    NSUserDefaults.standardUserDefaults().setObject(data, forKey: "movieDetail")
+    NSKeyedArchiver.archiveRootObject(movieClassObject, toFile: MovieClass.path())
 }
 
 func unarchiveMovie() -> Movie? {
-    var movieStruct: Movie?
-    if let data = NSUserDefaults.standardUserDefaults().objectForKey("movieDetail") as? NSData,
-        let movieClassObject  = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? MovieClass
-    {
-        movieStruct = movieClassObject.movie
-    }
-    return movieStruct
+    let movieClassObject = NSKeyedUnarchiver.unarchiveObjectWithFile(MovieClass.path()) as? MovieClass
+    return movieClassObject?.movie
 }
+
+// MARK: - Test
+
+let avatar = Movie(name: "Avatar", director: "James Cameron", releaseYear: 2009)
+archiveMovie(avatar)
+
+unarchiveMovie()?.director
