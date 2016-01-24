@@ -1,0 +1,2 @@
+# ArchivingSwiftStructures
+A comparison and demonstration between 3 ways of archiving and unarchiving Swift Structures. The playground ArchivingSwiftStructures1 is the most inelegant way of doing this. Look at ArchivingSwiftStructures2 and ArchivingSwiftStructures3 for more elegant ways. Swift made structures very powerful, and hence using structures more is very tempting. But, since NSCoding can only be conformed to by classes, archiving structure instances needs some workaround. Read through my article detailing ways to do this here: https://medium.com/p/e27744f26811/edit
