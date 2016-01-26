@@ -45,23 +45,23 @@ extension Movie: Dictionariable {
 // MARK: - Methods aiding in archiving and unarchiving the structures
 
 //Single Structure Instances
-func extractStructureFromArchive<T:Dictionariable>() -> T? {
+func extractStructureFromArchive<T: Dictionariable>() -> T? {
     guard let encodedDict = NSKeyedUnarchiver.unarchiveObjectWithFile(path()) as? NSDictionary else {return nil}
     return T(dictionaryRepresentation: encodedDict)
 }
 
-func archiveStructure<T:Dictionariable>(structure: T) {
+func archiveStructure<T: Dictionariable>(structure: T) {
     let encodedValue = structure.dictionaryRepresentation()
     NSKeyedArchiver.archiveRootObject(encodedValue, toFile: path())
 }
 
 //Multiple Structure Instances
-func extractStructuresFromArchive<T:Dictionariable>() -> [T] {
+func extractStructuresFromArchive<T: Dictionariable>() -> [T] {
     guard let encodedArray = NSKeyedUnarchiver.unarchiveObjectWithFile(path()) as? [AnyObject] else {return []}
     return encodedArray.map{$0 as? NSDictionary}.flatMap{T(dictionaryRepresentation: $0)}
 }
 
-func archiveStructureInstances<T:Dictionariable>(structures: [T]) {
+func archiveStructureInstances<T: Dictionariable>(structures: [T]) {
     let encodedValues = structures.map{$0.dictionaryRepresentation()}
     NSKeyedArchiver.archiveRootObject(encodedValues, toFile: path())
 }
