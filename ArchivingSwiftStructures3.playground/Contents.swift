@@ -45,23 +45,23 @@ extension Movie: Dictionariable {
 // MARK: - Methods aiding in archiving and unarchiving the structures
 
 //Single Structure Instances
-func extractStructureFromDictionary<T:Dictionariable>() -> T? {
+func extractStructureFromArchive<T:Dictionariable>() -> T? {
     guard let encodedDict = NSKeyedUnarchiver.unarchiveObjectWithFile(path()) as? NSDictionary else {return nil}
     return T(dictionaryRepresentation: encodedDict)
 }
 
-func saveStructureToDefaults<T:Dictionariable>(structure: T) {
+func archiveStructure<T:Dictionariable>(structure: T) {
     let encodedValue = structure.dictionaryRepresentation()
     NSKeyedArchiver.archiveRootObject(encodedValue, toFile: path())
 }
 
 //Multiple Structure Instances
-func extractStructuresFromDictionaryArray<T:Dictionariable>() -> [T] {
+func extractStructuresFromArchive<T:Dictionariable>() -> [T] {
     guard let encodedArray = NSKeyedUnarchiver.unarchiveObjectWithFile(path()) as? [AnyObject] else {return []}
     return encodedArray.map{$0 as? NSDictionary}.flatMap{T(dictionaryRepresentation: $0)}
 }
 
-func saveStructuresToDefaults<T:Dictionariable>(structures: [T]) {
+func archiveStructureInstances<T:Dictionariable>(structures: [T]) {
     let encodedValues = structures.map{$0.dictionaryRepresentation()}
     NSKeyedArchiver.archiveRootObject(encodedValues, toFile: path())
 }
@@ -79,8 +79,8 @@ func path() -> String {
 //Single Structure Instances
 
 let movie = Movie(name: "Avatar", director: "James Cameron", releaseYear: 2009)
-saveStructureToDefaults(movie)
-let someMovie: Movie? = extractStructureFromDictionary()
+archiveStructure(movie)
+let someMovie: Movie? = extractStructureFromArchive()
 someMovie?.director
 
 //Multiple Structure Instances
@@ -88,7 +88,7 @@ let movies = [
     Movie(name: "Avatar", director: "James Cameron", releaseYear: 2009),
     Movie(name: "The Dark Knight", director: "Christopher Nolan", releaseYear: 2008)
 ]
-saveStructuresToDefaults(movies)
+archiveStructureInstances(movies)
 
-let someArray: [Movie] = extractStructuresFromDictionaryArray()
+let someArray: [Movie] = extractStructuresFromArchive()
 someArray[0].director
