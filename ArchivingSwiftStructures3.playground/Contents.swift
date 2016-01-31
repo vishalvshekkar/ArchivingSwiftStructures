@@ -92,3 +92,34 @@ archiveStructureInstances(movies)
 
 let someArray: [Movie] = extractStructuresFromArchive()
 someArray[0].director
+
+
+
+//Nested Structures
+
+struct Actor {
+    let name: String
+    let firstMovie: Movie
+}
+
+extension Actor: Dictionariable {
+    func dictionaryRepresentation() -> NSDictionary {
+        let representation: [String: AnyObject] = [
+            "name": name,
+            "firstMovie": firstMovie.dictionaryRepresentation(),
+        ]
+        return representation
+    }
+    
+    
+    init?(dictionaryRepresentation: NSDictionary?) {
+        guard let values = dictionaryRepresentation else {return nil}
+        if let name = values["name"] as? String,
+            let someMovie: Movie = extractStructureFromDictionary() {
+                self.name = name
+                self.firstMovie = someMovie
+        } else {
+            return nil
+        }
+    }
+}
